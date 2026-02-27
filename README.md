@@ -12,7 +12,7 @@ A lightweight Fabric client-side mod that adds a GUI to log in using Minecraft s
 
 | Minecraft Version | Branch     | Link                                                                 |
 |-------------------|------------|----------------------------------------------------------------------|
-| 1.21.7+           | `main`     | [View Branch](https://github.com/AdditionalLibraries-Dev/Fabric-Session-Login/tree/main)     |
+| 1.21.11+          | `main`     | [View Branch](https://github.com/AdditionalLibraries-Dev/Fabric-Session-Login/tree/main)     |
 
 ---
 
