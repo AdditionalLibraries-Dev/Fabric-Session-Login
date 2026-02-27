@@ -61,6 +61,8 @@ public class LoginScreen extends Screen {
                     restoreButton.active = true;
                 } catch (IOException | RuntimeException e) {
                     this.currentTitle = surroundWithObfuscated(Text.literal("Invalid Session ID").formatted(Formatting.RED), 7);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 this.currentTitle = surroundWithObfuscated(Text.literal("Session ID cannot be empty").formatted(Formatting.RED), 5);

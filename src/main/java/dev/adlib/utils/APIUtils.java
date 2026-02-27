@@ -3,37 +3,38 @@ package dev.adlib.utils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.MinecraftClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import java.io.IOException;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
-
 public class APIUtils {
 
-    public static String[] getProfileInfo(String token) throws IOException {
-        try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpGet request = new HttpGet("https://api.minecraftservices.com/minecraft/profile");
-            request.setHeader("Authorization", "Bearer " + token);
-            CloseableHttpResponse response = client.execute(request);
-            String jsonString = EntityUtils.toString(response.getEntity(), StandardCharsets.UTF_8);
-            JsonObject jsonObject = JsonParser.parseString(jsonString).getAsJsonObject();
-            String IGN = jsonObject.get("name").getAsString();
-            String UUID = jsonObject.get("id").getAsString();
-            return new String[]{IGN, UUID};
-        }catch(Exception e){
-            throw new RuntimeException();
+    private static final HttpClient CLIENT = HttpClient.newHttpClient();
+
+    public static String[] getProfileInfo(String token) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.minecraftservices.com/minecraft/profile"))
+                .header("Authorization", "Bearer " + token)
+                .GET()
+                .build();
+
+        HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+
+        if (response.statusCode() != 200) {
+            throw new RuntimeException("Invalid token, status: " + response.statusCode());
         }
+
+        JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+        String ign = json.get("name").getAsString();
+        String uuid = json.get("id").getAsString();
+        return new String[]{ign, uuid};
     }
-    public static Boolean validateSession(String token){
+
+    public static Boolean validateSession(String token) {
         try {
             String[] profileInfo = getProfileInfo(token);
             String ign = profileInfo[0];
@@ -48,36 +49,43 @@ public class APIUtils {
             }
 
             UUID uuid = UUID.fromString(uuidString);
-
-            return ign.equals(MinecraftClient.getInstance().getSession().getUsername()) && uuid.equals(MinecraftClient.getInstance().getSession().getUuidOrNull());
+            MinecraftClient mc = MinecraftClient.getInstance();
+            return ign.equals(mc.getSession().getUsername()) &&
+                    uuid.equals(mc.getSession().getUuidOrNull());
         } catch (Exception e) {
             return false;
         }
     }
 
-    public static int changeSkin(String url,String token){
+    public static int changeSkin(String url, String token) {
         try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpPost request = new HttpPost("https://api.minecraftservices.com/minecraft/profile/skins");
-            request.setHeader("Authorization", "Bearer " + token);
-            request.setHeader("Content-Type", "application/json");
-            String jsonString = String.format("{ \"variant\": \"classic\", \"url\": \"%s\"}", url);
-            request.setEntity(new StringEntity(jsonString));
-            CloseableHttpResponse response = client.execute(request);
-            return response.getStatusLine().getStatusCode();
-        }catch (Exception e){
+            String body = String.format("{\"variant\":\"classic\",\"url\":\"%s\"}", url);
+
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.minecraftservices.com/minecraft/profile/skins"))
+                    .header("Authorization", "Bearer " + token)
+                    .header("Content-Type", "application/json")
+                    .POST(HttpRequest.BodyPublishers.ofString(body, StandardCharsets.UTF_8))
+                    .build();
+
+            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode();
+        } catch (Exception e) {
             return -1;
         }
     }
 
-    public static int changeName(String newName,String token){
+    public static int changeName(String newName, String token) {
         try {
-            CloseableHttpClient client = HttpClients.createDefault();
-            HttpPut request = new HttpPut("https://api.minecraftservices.com/minecraft/profile/name/" + newName);
-            request.setHeader("Authorization", "Bearer " + token);
-            CloseableHttpResponse response = client.execute(request);
-            return response.getStatusLine().getStatusCode();
-        }catch (Exception e){
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.minecraftservices.com/minecraft/profile/name/" + newName))
+                    .header("Authorization", "Bearer " + token)
+                    .PUT(HttpRequest.BodyPublishers.noBody())
+                    .build();
+
+            HttpResponse<String> response = CLIENT.send(request, HttpResponse.BodyHandlers.ofString());
+            return response.statusCode();
+        } catch (Exception e) {
             return -1;
         }
     }
