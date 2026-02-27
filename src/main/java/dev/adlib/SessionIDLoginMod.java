@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 public class SessionIDLoginMod implements ModInitializer {
 	public static final String MOD_ID = "session-id-login-mod";
+	public static String MOD_SOURCES = null;
+	public static String MOD_HOMEPAGE = null;
 
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -40,6 +42,8 @@ public class SessionIDLoginMod implements ModInitializer {
 
 		String MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID).map(container -> container.getMetadata().getVersion().getFriendlyString()).orElse("1.?.?");
 		String MOD_AUTHOR = FabricLoader.getInstance().getModContainer(MOD_ID).map(c -> c.getMetadata().getAuthors().isEmpty() ? "Unknown" : c.getMetadata().getAuthors().iterator().next().getName()).orElse("Unknown");
+		MOD_SOURCES = FabricLoader.getInstance().getModContainer(MOD_ID).map(c -> c.getMetadata().getContact().get("sources").orElse("Unknown")).orElse("Unknown");
+		MOD_HOMEPAGE = FabricLoader.getInstance().getModContainer(MOD_ID).map(c -> c.getMetadata().getContact().get("homepage").orElse("Unknown")).orElse("Unknown");
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (client.getWindow() != null) {

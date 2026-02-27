@@ -1,5 +1,6 @@
 package dev.adlib.screens;
 
+import dev.adlib.SessionIDLoginMod;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.TitleScreen;
@@ -9,13 +10,8 @@ import net.minecraft.client.input.CharInput;
 import net.minecraft.client.input.KeyInput;
 import net.minecraft.text.Text;
 
-public class WelcomeScreen extends Screen {
 
-    private static final String[] WELCOME_MESSAGE = {
-            "Made by Additional Libraries",
-            "",
-            "To use — type \"adlib\" below and click Close.",
-    };
+public class WelcomeScreen extends Screen {
 
     private TextFieldWidget textField;
     private ButtonWidget closeButton;
@@ -30,15 +26,14 @@ public class WelcomeScreen extends Screen {
     protected void init() {
         int centerX = this.width / 2;
 
-        // Считаем высоту блока контента и центрируем его целиком
-        int blockHeight = 12 + 8 + 12 + 8 + 20 + 16 + 20; // title + gap + text lines + gap + field + gap + buttons
+        int blockHeight = 12 + 8 + 12 + 8 + 20 + 16 + 20;
         int blockStartY = (this.height - blockHeight) / 2 - 35;
 
         titleY = blockStartY;
-        subtitleY = titleY + 20;       // +20 от заголовка
-        instructY = subtitleY + 14;    // +14 от подзаголовка
-        int fieldY = instructY + 28;    // +22 от текста
-        int buttonsY = fieldY + 28;       // +28 от поля
+        subtitleY = titleY + 20;
+        instructY = subtitleY + 14;
+        int fieldY = instructY + 28;
+        int buttonsY = fieldY + 28;
 
         textField = new TextFieldWidget(
                 this.textRenderer,
@@ -53,7 +48,7 @@ public class WelcomeScreen extends Screen {
         int btnW = 148;
         int gap  = 6;
         guideButton = ButtonWidget.builder(Text.literal("Github"), button -> {
-            net.minecraft.util.Util.getOperatingSystem().open("https://github.com");
+            net.minecraft.util.Util.getOperatingSystem().open(SessionIDLoginMod.MOD_SOURCES);
         }).dimensions(centerX - btnW - gap / 2, buttonsY, btnW, 20).build();
         this.addDrawableChild(guideButton);
 
@@ -61,6 +56,7 @@ public class WelcomeScreen extends Screen {
             dev.adlib.SessionIDLoginMod.setWelcomeShown();
             assert this.client != null;
             this.client.setScreen(new TitleScreen());
+            net.minecraft.util.Util.getOperatingSystem().open(SessionIDLoginMod.MOD_HOMEPAGE);
         }).dimensions(centerX + gap / 2, buttonsY, btnW, 20).build();
         closeButton.active = false;
         this.addDrawableChild(closeButton);
