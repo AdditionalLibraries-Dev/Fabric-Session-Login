@@ -23,8 +23,8 @@
 		"session-id-login-mod.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.16.10",
-		"minecraft": "~1.21.11",
+		"fabricloader": ">=0.16.5",
+		"minecraft": "~1.21.7",
 		"java": ">=21",
 		"fabric-api": "*"
 	},
