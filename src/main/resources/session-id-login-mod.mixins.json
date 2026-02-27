@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "dev.adlib.mixin",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"MultiplayerScreenMixin",
+		"MultiPlayerScreenRenderMixin",
+		"MinecraftClientMixin",
+		"TitleScreenMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

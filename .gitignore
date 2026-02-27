@@ -1,0 +1,41 @@
+# === Gradle ===
+.gradle/
+build/
+out/
+classes/
+!gradle/wrapper/gradle-wrapper.jar
+
+# === IntelliJ IDEA ===
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# === VS Code ===
+.vscode/
+
+# === Eclipse ===
+.settings/
+.classpath
+.project
+bin/
+
+# === Minecraft Development ===
+run/
+logs/
+remapped/
+.cache/
+devlibs/
+
+# === OS/Editor Junk ===
+*.DS_Store
+Thumbs.db
+
+# === Crash/Heap Dumps ===
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr
+
+# === Launch configs ===
+*.launch
